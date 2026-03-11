@@ -33,4 +33,36 @@
  */
 export function calculateAutoFare(distance, waitingMinutes = 0) {
   // Your code here
+  if (typeof distance !== 'number' || distance <= 0) {
+    return -1;
+  }
+  if (typeof waitingMinutes !== 'number' || waitingMinutes < 0) {
+    return -1;
+  }
+  
+  const distanceCeil = Math.ceil(distance);
+  let fare = 0;
+  let remainingDistance = distanceCeil;
+
+  // First km (minimum fare)
+  if (remainingDistance > 0) {
+    fare += 30;
+    remainingDistance -= 1;
+  }
+
+  // Next 4 km (2 to 5 km)
+  if (remainingDistance > 0 && remainingDistance <= 4) {
+    fare += remainingDistance * 15;
+    remainingDistance = 0;
+  } else if (remainingDistance > 4) {
+    fare += 4 * 15; // Add fare for first four km
+    remainingDistance -= 4;
+    fare += remainingDistance * 10;
+  }
+
+  // Waiting charges
+  const waitingPairs = Math.ceil(waitingMinutes / 2);
+  fare += waitingPairs * 5;
+
+  return fare;
 }
